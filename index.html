@@ -50,7 +50,7 @@
     padding: 14px 26px;
     cursor: pointer;
     position: absolute;
-    transition: transform 0.2s ease;
+    transition: all 0.25s ease;
   }
 
   #yes {
@@ -108,7 +108,7 @@
 
   <div class="buttons" id="buttons">
     <button id="yes" onclick="yesClicked()">Yes 😍</button>
-    <button id="no" onmouseenter="moveNo()" ontouchstart="moveNo()">No 🙈</button>
+    <button id="no" onclick="moveNo()">No 🙈</button>
   </div>
 
   <div class="from">— Girish 💖</div>
@@ -125,29 +125,35 @@
 </div>
 
 <script>
-  let noCount = 0;
+  let noClicks = 0;
 
   function moveNo() {
     const no = document.getElementById("no");
     const buttons = document.getElementById("buttons");
     const yes = document.getElementById("yes");
 
-    noCount++;
+    noClicks++;
 
     const maxX = buttons.clientWidth - no.offsetWidth - 10;
-    const maxY = buttons.clientHeight - no.offsetHeight - 10;
+    const sideLeft = 10;
+    const sideRight = maxX;
 
     let x, y;
 
-    if (noCount <= 5) {
-      // Stay on sides, always visible
-      x = noCount % 2 === 0 ? maxX : 10;
+    if (noClicks <= 4) {
+      // Click 1–4: run on sides, far from YES
+      x = Math.random() < 0.5 ? sideLeft : sideRight;
       y = 60;
-    } else {
-      // Finally tease above YES (still inside buttons)
-      const yesRect = yes.offsetTop;
-      x = (buttons.clientWidth - no.offsetWidth) / 2;
-      y = Math.max(0, yesRect - 45);
+    } 
+    else if (noClicks <= 6) {
+      // Click 5–6: closer but still teasing
+      x = buttons.clientWidth / 2 - no.offsetWidth;
+      y = 70;
+    } 
+    else {
+      // Click 7+: near YES (not on top)
+      x = yes.offsetLeft + 40;
+      y = yes.offsetTop + 40;
     }
 
     no.style.left = x + "px";
