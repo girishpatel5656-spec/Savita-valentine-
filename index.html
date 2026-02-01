@@ -126,6 +126,8 @@
 
 <script>
   let noClicks = 0;
+  let lastX = -1;
+  let lastY = -1;
 
   function moveNo() {
     const no = document.getElementById("no");
@@ -141,20 +143,28 @@
     let x, y;
 
     if (noClicks <= 4) {
-      // Click 1–4: run on sides, far from YES
+      // Click 1–4: far on sides
       x = Math.random() < 0.5 ? sideLeft : sideRight;
       y = 60;
     } 
     else if (noClicks <= 6) {
-      // Click 5–6: closer but still teasing
+      // Click 5–6: closer but not near YES
       x = buttons.clientWidth / 2 - no.offsetWidth;
       y = 70;
     } 
     else {
-      // Click 7+: near YES (not on top)
-      x = yes.offsetLeft + 40;
+      // Click 7+: tease near YES (not exact)
+      x = yes.offsetLeft + 35;
       y = yes.offsetTop + 40;
     }
+
+    // Force movement every click
+    if (x === lastX && y === lastY) {
+      x = x === sideLeft ? sideRight : sideLeft;
+    }
+
+    lastX = x;
+    lastY = y;
 
     no.style.left = x + "px";
     no.style.top = y + "px";
