@@ -50,6 +50,7 @@
     padding: 14px 26px;
     cursor: pointer;
     position: absolute;
+    transition: transform 0.2s ease;
   }
 
   #yes {
@@ -57,6 +58,7 @@
     color: white;
     font-size: 18px;
     left: 50%;
+    top: 10px;
     transform: translateX(-50%);
   }
 
@@ -64,7 +66,7 @@
     background: #ddd;
     color: #333;
     font-size: 14px;
-    left: 10px;   /* STARTS ON SIDE */
+    left: 10px;
     top: 60px;
   }
 
@@ -104,9 +106,9 @@
 <div class="card" id="card">
   <img src="cat.png.PNG" alt="Anime Cat">
 
-  <div class="buttons">
+  <div class="buttons" id="buttons">
     <button id="yes" onclick="yesClicked()">Yes 😍</button>
-    <button id="no" onmouseover="moveNo()" ontouchstart="moveNo()">No 🙈</button>
+    <button id="no" onmouseenter="moveNo()" ontouchstart="moveNo()">No 🙈</button>
   </div>
 
   <div class="from">— Girish 💖</div>
@@ -127,31 +129,27 @@
 
   function moveNo() {
     const no = document.getElementById("no");
-    const card = document.getElementById("card");
+    const buttons = document.getElementById("buttons");
     const yes = document.getElementById("yes");
 
     noCount++;
 
-    const padding = 20;
-    const maxX = card.clientWidth - no.offsetWidth - padding;
-    const maxY = card.clientHeight - no.offsetHeight - padding;
+    const maxX = buttons.clientWidth - no.offsetWidth - 10;
+    const maxY = buttons.clientHeight - no.offsetHeight - 10;
 
     let x, y;
 
-    if (noCount < 6) {
-      // First 5 times → stay on sides / around
-      x = Math.random() < 0.5 ? 10 : maxX;
-      y = Math.random() * (maxY * 0.7) + 40;
+    if (noCount <= 5) {
+      // Stay on sides, always visible
+      x = noCount % 2 === 0 ? maxX : 10;
+      y = 60;
     } else {
-      // After 5–6 tries → jump above YES
-      const yesRect = yes.getBoundingClientRect();
-      const cardRect = card.getBoundingClientRect();
-
-      x = yesRect.left - cardRect.left;
-      y = yesRect.top - cardRect.top - 45;
+      // Finally tease above YES (still inside buttons)
+      const yesRect = yes.offsetTop;
+      x = (buttons.clientWidth - no.offsetWidth) / 2;
+      y = Math.max(0, yesRect - 45);
     }
 
-    no.style.transition = "all 0.25s ease";
     no.style.left = x + "px";
     no.style.top = y + "px";
   }
